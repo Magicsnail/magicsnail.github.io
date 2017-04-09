@@ -1,0 +1,742 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,应用调优," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在篇幅一中已经详细介绍了Android手机应用电量统计的算法，这也为我们优化提供了最基本的思考方向。  减轻CPU负载； 减少wakelock次数以及使用时长； 减少移动网络的active time； 减少wifi、蓝牙的rx和tx时长； 减少硬件的占用；  减轻CPU负载CPU的高负载通常是在高计算量的场景，比如音频、视频编解码这种，这些可以考虑通过将一些高计算转嫁给GPU等其他硬件上去，比如使">
+<meta name="keywords" content="Android,应用调优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优化你的安卓应用：电量篇（三）优化电量消耗">
+<meta property="og:url" content="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（三）优化电量消耗/index.html">
+<meta property="og:site_name" content="笔歌的博客">
+<meta property="og:description" content="在篇幅一中已经详细介绍了Android手机应用电量统计的算法，这也为我们优化提供了最基本的思考方向。  减轻CPU负载； 减少wakelock次数以及使用时长； 减少移动网络的active time； 减少wifi、蓝牙的rx和tx时长； 减少硬件的占用；  减轻CPU负载CPU的高负载通常是在高计算量的场景，比如音频、视频编解码这种，这些可以考虑通过将一些高计算转嫁给GPU等其他硬件上去，比如使">
+<meta property="og:image" content="http://yoursite.com/img/battery/radio.png">
+<meta property="og:image" content="http://yoursite.com/img/battery/radio_bad.png">
+<meta property="og:image" content="http://yoursite.com/img/battery/radio_good.png">
+<meta property="og:updated_time" content="2017-04-09T08:23:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何优化你的安卓应用：电量篇（三）优化电量消耗">
+<meta name="twitter:description" content="在篇幅一中已经详细介绍了Android手机应用电量统计的算法，这也为我们优化提供了最基本的思考方向。  减轻CPU负载； 减少wakelock次数以及使用时长； 减少移动网络的active time； 减少wifi、蓝牙的rx和tx时长； 减少硬件的占用；  减轻CPU负载CPU的高负载通常是在高计算量的场景，比如音频、视频编解码这种，这些可以考虑通过将一些高计算转嫁给GPU等其他硬件上去，比如使">
+<meta name="twitter:image" content="http://yoursite.com/img/battery/radio.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（三）优化电量消耗/"/>
+
+
+
+
+
+  <title> 如何优化你的安卓应用：电量篇（三）优化电量消耗 | 笔歌的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔歌的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（三）优化电量消耗/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="笔歌">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔歌的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何优化你的安卓应用：电量篇（三）优化电量消耗
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T16:04:01+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在篇幅一中已经详细介绍了Android手机应用电量统计的算法，这也为我们优化提供了最基本的思考方向。</p>
+<ul>
+<li>减轻CPU负载；</li>
+<li>减少wakelock次数以及使用时长；</li>
+<li>减少移动网络的active time；</li>
+<li>减少wifi、蓝牙的rx和tx时长；</li>
+<li>减少硬件的占用；</li>
+</ul>
+<h2 id="减轻CPU负载"><a href="#减轻CPU负载" class="headerlink" title="减轻CPU负载"></a>减轻CPU负载</h2><p>CPU的高负载通常是在高计算量的场景，比如音频、视频编解码这种，这些可以考虑通过将一些高计算转嫁给GPU等其他硬件上去，比如使用硬编解码器。</p>
+<p>关于CPU，只能从代码层面上考虑优化，避免出现一些无限循环的计算，能分解的就分解，无效的工作能减少就减少。</p>
+<h2 id="减少wakelock次数和使用时长"><a href="#减少wakelock次数和使用时长" class="headerlink" title="减少wakelock次数和使用时长"></a>减少wakelock次数和使用时长</h2><p>对于wakelock的获取，通常都是由Alarm引起，比如应用后台定时维持心跳或计算之类的，因此使用了alarm。还有一些场景下，比如注册的一些receiver，App为了能够在收到broadcast的时候做一些额外操作也会申请wakelock。</p>
+<p>这里面需要注意的是申请后记得及时释放。另外，假如申请后，依赖网络操作或某个条件的释放，这里面就要考虑这个条件（比如网络操作的耗时）是否会出现异常情况导致持续很长时间，如果会的话那么必然会导致wakelock长期持有。因此建议尽可能的使用具有超时的wakelock。</p>
+<p>另外，如果有定时的任务应用也需要考虑是否可以将一些任务进行捆绑执行，比如有一些任务不需要那么准时的执行。这就是Android新引入的JobSchedule所作的，避免启动了一堆Alarm。</p>
+<h2 id="减少蜂窝移动网络的使用"><a href="#减少蜂窝移动网络的使用" class="headerlink" title="减少蜂窝移动网络的使用"></a>减少蜂窝移动网络的使用</h2><p>对于安卓手机，应用唤醒radio device并执行完成收发工作后，radio device并不会立马得到释放休眠，此时手机为了防止连续唤醒，会继续保持一段时间直至仍未使用才会进入休眠，如下图所示：</p>
+<p><img src="/img/battery/radio.png" alt="radio"></p>
+<p>因此，减少其唤醒次数，尽可能使用batch的方式使用网络才是较优的方式，即尽可能把一堆网络操作集中在一起做，亦或是优化服务端实现批量接口。</p>
+<p><img src="/img/battery/radio_bad.png" alt="bad"></p>
+<p>如上图，radio的活动会出现碎片化状态，如果优化后能够达到下图的状态则是最优的：</p>
+<p><img src="/img/battery/radio_good.png" alt="good"></p>
+<p>另外，wifi的电量消耗比radio小得多，因此，把一些非必要的请求延迟到wifi中做也是更优的做法。</p>
+<p>最后，还可以通过预取网络数据、在充电时做各种网络操作等方式达到减少网络active时间的目的。</p>
+<blockquote>
+<p>注：上面两个实例图取自 <a href="http://hukai.me/android-performance-battery/。" target="_blank" rel="external">http://hukai.me/android-performance-battery/。</a></p>
+</blockquote>
+<h2 id="减少硬件的使用"><a href="#减少硬件的使用" class="headerlink" title="减少硬件的使用"></a>减少硬件的使用</h2><p>主要转对传感器，比如GPS、陀螺仪、摄像机、闪光灯等，用完之后或者在无效的状态下及时释放硬件。比如GPS定位，可能在Activity进入onStop之后，如果业务需求不再需要定位信息，可以及时释放GPS，等到重新换起到foreground的时候再重新申请。</p>
+<h2 id="JobSchedule"><a href="#JobSchedule" class="headerlink" title="JobSchedule"></a>JobSchedule</h2><p>应用需要做的事情就是判断哪些任务是不紧急的，可以交给Job Scheduler来处理，Job Scheduler集中处理收到的任务，系统会选择合适的时机再一起进行执行。具体的使用方法就不再做介绍了。</p>
+<h2 id="对低电耗模式和应用待机模式进行针对性优化"><a href="#对低电耗模式和应用待机模式进行针对性优化" class="headerlink" title="对低电耗模式和应用待机模式进行针对性优化"></a>对低电耗模式和应用待机模式进行针对性优化</h2><p>详情见DOC: <a href="https://developer.android.com/training/monitoring-device-state/doze-standby.html#understand_app_standby" target="_blank" rel="external">对低电耗模式和应用待机模式进行针对性优化</a></p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>总之，优化基本都是基于以上一些原则做的，了解电量的消耗后才会有意识的在日常开发中写出优秀的代码，定制好APP的各种策略、减少消耗，给用户创造一个更好的使用体验，提升安卓阵营的体验，否则搞乱了生态我们这些安卓开发就要走入失业大军了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/应用调优/" rel="tag"># 应用调优</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/09/如何优化你的安卓应用：电量篇（二）分析电量消耗/" rel="prev" title="如何优化你的安卓应用：电量篇（二）分析电量消耗">
+                如何优化你的安卓应用：电量篇（二）分析电量消耗 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="笔歌" />
+          <p class="site-author-name" itemprop="name">笔歌</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#减轻CPU负载"><span class="nav-number">1.</span> <span class="nav-text">减轻CPU负载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减少wakelock次数和使用时长"><span class="nav-number">2.</span> <span class="nav-text">减少wakelock次数和使用时长</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减少蜂窝移动网络的使用"><span class="nav-number">3.</span> <span class="nav-text">减少蜂窝移动网络的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#减少硬件的使用"><span class="nav-number">4.</span> <span class="nav-text">减少硬件的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JobSchedule"><span class="nav-number">5.</span> <span class="nav-text">JobSchedule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对低电耗模式和应用待机模式进行针对性优化"><span class="nav-number">6.</span> <span class="nav-text">对低电耗模式和应用待机模式进行针对性优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后"><span class="nav-number">7.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">笔歌</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

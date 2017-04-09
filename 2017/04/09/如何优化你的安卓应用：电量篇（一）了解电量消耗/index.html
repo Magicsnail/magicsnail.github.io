@@ -1,0 +1,820 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,应用调优," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="安卓手机的耗电问题一直饱受诟病，各个手机厂商也是一直各种在电池容量上搞噱头竞争。但用过安卓手机的人都有一个感受：一开始待机挺长时间的，后来用着用着就有变成一天一冲、两冲了。原因很多，一方面是手机的硬件老化；另一方面也是当前安卓应用生态的问题了：开发者永远只希望用户能多用自己的APP，能多推送自己的信息给用户。 另外，你也会有一个感受：假如你外出，你会特意把网络什么的关掉，这样你的手机一天下来居然还">
+<meta name="keywords" content="Android,应用调优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优化你的安卓应用：电量篇（一）了解电量消耗">
+<meta property="og:url" content="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/index.html">
+<meta property="og:site_name" content="笔歌的博客">
+<meta property="og:description" content="安卓手机的耗电问题一直饱受诟病，各个手机厂商也是一直各种在电池容量上搞噱头竞争。但用过安卓手机的人都有一个感受：一开始待机挺长时间的，后来用着用着就有变成一天一冲、两冲了。原因很多，一方面是手机的硬件老化；另一方面也是当前安卓应用生态的问题了：开发者永远只希望用户能多用自己的APP，能多推送自己的信息给用户。 另外，你也会有一个感受：假如你外出，你会特意把网络什么的关掉，这样你的手机一天下来居然还">
+<meta property="og:image" content="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/battery/net-diff.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/battery/profile.png">
+<meta property="og:updated_time" content="2017-04-09T08:06:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何优化你的安卓应用：电量篇（一）了解电量消耗">
+<meta name="twitter:description" content="安卓手机的耗电问题一直饱受诟病，各个手机厂商也是一直各种在电池容量上搞噱头竞争。但用过安卓手机的人都有一个感受：一开始待机挺长时间的，后来用着用着就有变成一天一冲、两冲了。原因很多，一方面是手机的硬件老化；另一方面也是当前安卓应用生态的问题了：开发者永远只希望用户能多用自己的APP，能多推送自己的信息给用户。 另外，你也会有一个感受：假如你外出，你会特意把网络什么的关掉，这样你的手机一天下来居然还">
+<meta name="twitter:image" content="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/battery/net-diff.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/"/>
+
+
+
+
+
+  <title> 如何优化你的安卓应用：电量篇（一）了解电量消耗 | 笔歌的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔歌的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/09/如何优化你的安卓应用：电量篇（一）了解电量消耗/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="笔歌">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔歌的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何优化你的安卓应用：电量篇（一）了解电量消耗
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T16:03:40+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>安卓手机的耗电问题一直饱受诟病，各个手机厂商也是一直各种在电池容量上搞噱头竞争。但用过安卓手机的人都有一个感受：一开始待机挺长时间的，后来用着用着就有变成一天一冲、两冲了。原因很多，一方面是手机的硬件老化；另一方面也是当前安卓应用生态的问题了：开发者永远只希望用户能多用自己的APP，能多推送自己的信息给用户。</p>
+<p>另外，你也会有一个感受：假如你外出，你会特意把网络什么的关掉，这样你的手机一天下来居然还剩了很多电！！曾经我的用了2年多的小米1手机关掉后当成功能机使用居然待机2-3天没问题！！</p>
+<h2 id="手机的电量消耗"><a href="#手机的电量消耗" class="headerlink" title="手机的电量消耗"></a>手机的电量消耗</h2><p>作为一个开发者，直观感受上电量的消耗无非就是几点：手机硬件（比如屏幕、声音）、传感器（GPS、重力感应等）、网络、应用CPU消耗这几大块。但是手机又是如何统计你的App的电量消耗的呢？是否你应用打开时屏幕的消耗都算你的APP的头上呢？等等一堆细节问题就会带来了。本文就讨论这些细节，不过还是先从外层一层一层剥开电量的面纱。</p>
+<h4 id="开机使用中的电量消耗"><a href="#开机使用中的电量消耗" class="headerlink" title="开机使用中的电量消耗"></a>开机使用中的电量消耗</h4><p>对于开机使用中，手机的最大消耗就在于硬件了，比如CPU、网络和屏幕。用户能做的只能是通过选择较好的网络环境（比如wifi）、调节屏幕亮度以及关闭其他不用的APP和硬件服务来提高使用时长、少玩一些需要高运算的游戏等。国内的自定制rom也在这方面对APP做了很多约束，比如后台挂起应用等，这也给应用开发者带来了一堆头痛的问题（比如后台保活）。要怪就怪谷歌不按套路出牌退出中国市场吧… …（提供了一堆的服务中国用户却无法享受，生态一直难以维护）。</p>
+<h4 id="网络环境与耗电"><a href="#网络环境与耗电" class="headerlink" title="网络环境与耗电"></a>网络环境与耗电</h4><p>不同的网络环境电量的消耗也是不同的，作为一个开发者，了解不同的网络环境对电量的影响还是很有必要的，这里面我就没有专门再做测试了，就借用网上文章来说明下：</p>
+<p><img src="battery/net-diff.png" alt="不同网络环境下的电量消耗"></p>
+<p>（1）在待机情况下，CPU以及网络模块完全处于休眠状态，因此也是最省电。</p>
+<p>（2）灭屏情况下传输，CPU被激活，耗电显著增加，即便是处理1K的心跳包，电量消耗也会是待机的6倍左右（45mA）；</p>
+<p>（3）在灭屏情况下，高负载的download时候，不同网络下电量消耗也明显不同，其中WiFi最省电（70mA），3G（270mA）和2G（280mA）相当，是WiFi的4倍左右。</p>
+<p>综上，不同网络环境下耗电还是有差距的，APP开发需要做的就是根据不同的网络环境做相应策略的调整来优化APP的性能，比如尽可能的在wifi环境下做耗费网络的操作。</p>
+<h2 id="APP的电量消耗统计"><a href="#APP的电量消耗统计" class="headerlink" title="APP的电量消耗统计"></a>APP的电量消耗统计</h2><h4 id="BatteryStatsService"><a href="#BatteryStatsService" class="headerlink" title="BatteryStatsService"></a>BatteryStatsService</h4><p>这个类的官方描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">All information we are collecting about things that can happen that impact battery life.</div></pre></td></tr></table></figure>
+<p>该service提供了所有电量的消耗详情，具体创建在ActivityManagerService中完成。翻看起代码，发现其dump函数调用了BatteryStatsImpl实现。</p>
+<h4 id="BatteryStatsImpl"><a href="#BatteryStatsImpl" class="headerlink" title="BatteryStatsImpl"></a>BatteryStatsImpl</h4><p>先看下其构造函数，注意到有一个JournaledFile，从名字可以看出其是一个存储电量消耗过程的文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public BatteryStatsImpl(File systemDir, Handler handler) &#123;</div><div class="line">    if (systemDir != null) &#123;</div><div class="line">        mFile = new JournaledFile(new File(systemDir, &quot;batterystats.bin&quot;),</div><div class="line">                new File(systemDir, &quot;batterystats.bin.tmp&quot;));</div><div class="line">    &#125; else &#123;</div><div class="line">        mFile = null;</div><div class="line">    &#125;</div><div class="line">    ... </div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>BatteryStatsImpl是用于获取手机电量消耗详情的对象，batterystats.bin则存储了这些数据，从文件中加载这些数据到BatteryStatsImpl对象中则通过readLocked函数完成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">try &#123;</div><div class="line">    File file = mFile.chooseForRead();</div><div class="line">    if (!file.exists()) &#123;</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    FileInputStream stream = new FileInputStream(file);</div><div class="line"></div><div class="line">    byte[] raw = BatteryStatsHelper.readFully(stream);</div><div class="line">    Parcel in = Parcel.obtain();</div><div class="line">    in.unmarshall(raw, 0, raw.length);</div><div class="line">    in.setDataPosition(0);</div><div class="line">    stream.close();</div><div class="line"></div><div class="line">    readSummaryFromParcel(in);</div><div class="line">&#125; catch(Exception e) &#123;</div><div class="line">    Slog.e(&quot;BatteryStats&quot;, &quot;Error reading battery statistics&quot;, e);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上基本就是电量的存储与读取统计信息的简单介绍。</p>
+<h4 id="PowerProfile"><a href="#PowerProfile" class="headerlink" title="PowerProfile"></a>PowerProfile</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Reports power consumption values for various device activities. Reads values from an XML file.</div><div class="line">Customize the XML file for different devices.</div></pre></td></tr></table></figure>
+<p>该类通过从XML文件中读取值，这些值代表了系统各个硬件部件在不同状态时的电量消耗值，比如CPU在空闲时、活动时等。XML为：R.xml.power_profile，值以Map的形式存储。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">public double getAveragePower(String type, int level);</div></pre></td></tr></table></figure>
+<p>上面这个接口可以看出这些部件的耗电量也会分等级的，比如CPU运行在400MHZ和1GHZ的情况下单位时间内耗电量也是不同的。</p>
+<p>如下xml文件实例，这个文件实际值也是由手机硬件厂商自己定义的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&lt;!-- Current when CPU is idle --&gt;</div><div class="line">&lt;item name=&quot;cpu.idle&quot;&gt;0.1&lt;/item&gt;</div><div class="line">&lt;!-- Current at each CPU speed, as per &apos;cpu.speeds&apos; --&gt;</div><div class="line">&lt;array name=&quot;cpu.active&quot;&gt;</div><div class="line">    &lt;value&gt;0.1&lt;/value&gt;  &lt;!-- ~100mA --&gt;</div><div class="line">&lt;/array&gt;</div><div class="line">&lt;!-- This is the battery capacity in mAh (measured at nominal voltage) --&gt;</div><div class="line">&lt;item name=&quot;battery.capacity&quot;&gt;1000&lt;/item&gt;</div><div class="line"></div><div class="line">&lt;array name=&quot;wifi.batchedscan&quot;&gt; &lt;!-- mA --&gt;</div><div class="line">    &lt;value&gt;.0002&lt;/value&gt; &lt;!-- 1-8/hr --&gt;</div><div class="line">    &lt;value&gt;.002&lt;/value&gt;  &lt;!-- 9-64/hr --&gt;</div><div class="line">    &lt;value&gt;.02&lt;/value&gt;   &lt;!-- 65-512/hr --&gt;</div><div class="line">    &lt;value&gt;.2&lt;/value&gt;    &lt;!-- 513-4,096/hr --&gt;</div><div class="line">    &lt;value&gt;2&lt;/value&gt;    &lt;!-- 4097-/hr --&gt;</div><div class="line">&lt;/array&gt;</div></pre></td></tr></table></figure>
+<p>总结：</p>
+<ol>
+<li>手机硬件厂商定义了实际硬件在不同运行状态下的电量消耗值的power_profile.xml值;</li>
+<li>PowerProfile类则读取这个XML值供实际电量计算。</li>
+</ol>
+<h4 id="电量计算：BatteryStatsHelper"><a href="#电量计算：BatteryStatsHelper" class="headerlink" title="电量计算：BatteryStatsHelper"></a>电量计算：BatteryStatsHelper</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A helper class for retrieving the power usage information for all applications and services.</div></pre></td></tr></table></figure>
+<p>该类主要的几个核心功能函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">refreshStats(...); 	// 刷新电量消耗；</div><div class="line">processAppUsage(SparseArray&lt;UserHandle&gt; asUsers); //计算软件的电量消耗；</div><div class="line">processMiscUsage();	// 计算硬件的电量消耗；</div></pre></td></tr></table></figure>
+<p>对于processAppUsage统计的是入参Uid。一般地来说每个App都对应一个Uid，但存在以下特殊情况，如果两个或多个App签名和sharedUserId相同，则在运行时，他们拥有相同Uid。对于系统应用uid为system，则统一算入system应用的耗电量。</p>
+<p>Uid_Power = process_1_Power + … + process_N_Power，其中所有进程都是属于同一个uid。 当同一的uid下，只有一个进程时，Uid_Power = process_Power;</p>
+<p>其中软件功耗主要包括下面几项：</p>
+<ul>
+<li>CPU功耗</li>
+<li>wakelock功耗</li>
+<li>无线radio功耗</li>
+<li>wifi功耗</li>
+<li>蓝牙功耗</li>
+<li>sensor功耗</li>
+<li>相机功耗</li>
+<li>闪光灯功耗</li>
+</ul>
+<p>App的统计代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">private void processAppUsage(SparseArray&lt;UserHandle&gt; asUsers) &#123;</div><div class="line">        final boolean forAllUsers = (asUsers.get(UserHandle.USER_ALL) != null);</div><div class="line">        mStatsPeriod = mTypeBatteryRealtime;</div><div class="line"></div><div class="line">        BatterySipper osSipper = null;</div><div class="line">        // 注意：mStats为BatteryStatsImpl</div><div class="line">        final SparseArray&lt;? extends Uid&gt; uidStats = mStats.getUidStats();</div><div class="line">        final int NU = uidStats.size();</div><div class="line">        for (int iu = 0; iu &lt; NU; iu++) &#123;</div><div class="line">            final Uid u = uidStats.valueAt(iu);</div><div class="line">            final BatterySipper app = new BatterySipper(BatterySipper.DrainType.APP, u, 0);</div><div class="line"></div><div class="line">            mCpuPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mWakelockPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mMobileRadioPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mWifiPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mBluetoothPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mSensorPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mCameraPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            mFlashlightPowerCalculator.calculateApp(app, u, mRawRealtime, mRawUptime, mStatsType);</div><div class="line">            ...</div><div class="line">            ...</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>可见，BatteryStatsHelper通过从BatteryStatsImpl中取出对应Uid的信息传给各个calculator计算电量消耗。</p>
+<h5 id="CPU功耗统计"><a href="#CPU功耗统计" class="headerlink" title="CPU功耗统计"></a>CPU功耗统计</h5><p>初始化方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public CpuPowerCalculator(PowerProfile profile) &#123;</div><div class="line">        final int speedSteps = profile.getNumSpeedSteps();</div><div class="line">        mPowerCpuNormal = new double[speedSteps];</div><div class="line">        mSpeedStepTimes = new long[speedSteps];</div><div class="line">        for (int p = 0; p &lt; speedSteps; p++) &#123;</div><div class="line">            mPowerCpuNormal[p] = profile.getAveragePower(PowerProfile.POWER_CPU_ACTIVE, p);</div><div class="line">        &#125;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<p>初始化工作主要是从PowerProfile中提取CPU在不同speed等级下的功耗。</p>
+<p>计算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">public void calculateApp(BatterySipper app, BatteryStats.Uid u, long rawRealtimeUs,</div><div class="line">                         long rawUptimeUs, int statsType) &#123;</div><div class="line">    final int speedSteps = mSpeedStepTimes.length;</div><div class="line"></div><div class="line">	// step1：提取不同cpu速度下的运行时长以及总时长</div><div class="line">    long totalTimeAtSpeeds = 0;</div><div class="line">    for (int step = 0; step &lt; speedSteps; step++) &#123;</div><div class="line">        mSpeedStepTimes[step] = u.getTimeAtCpuSpeed(step, statsType);</div><div class="line">        totalTimeAtSpeeds += mSpeedStepTimes[step];</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">	// step2: cpu运行时长：user + system</div><div class="line">    app.cpuTimeMs = (u.getUserCpuTimeUs(statsType) + u.getSystemCpuTimeUs(statsType)) / 1000;</div><div class="line"></div><div class="line">	// step3: 根据不同等级计算CPU功耗</div><div class="line">    double cpuPowerMaMs = 0;</div><div class="line">    for (int step = 0; step &lt; speedSteps; step++) &#123;</div><div class="line">        final double ratio = (double) mSpeedStepTimes[step] / totalTimeAtSpeeds;</div><div class="line">        final double cpuSpeedStepPower = ratio * app.cpuTimeMs * mPowerCpuNormal[step];</div><div class="line">        cpuPowerMaMs += cpuSpeedStepPower;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">	// step4：</div><div class="line">    for (int i = 0; i &lt; processStatsCount; i++) &#123;</div><div class="line">        final BatteryStats.Uid.Proc ps = processStats.valueAt(i);</div><div class="line">        final long costValue = ps.getUserTime(statsType) + ps.getSystemTime(statsType)</div><div class="line">                + ps.getForegroundTime(statsType);</div><div class="line"></div><div class="line">        // Each App can have multiple packages and with multiple running processes.</div><div class="line">        // Keep track of the package who&apos;s process has the highest drain.</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Convert the CPU power to mAh</div><div class="line">    app.cpuPowerMah = cpuPowerMaMs / (60 * 60 * 1000);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Step1：从统计数据中提取CPU在不同speed下的运行时长；</p>
+<p>Step2：cpu运行总时长，包括user+system；</p>
+<p>Step3：计算CPU的功耗，不同等级的时长和对应的消耗值；</p>
+<p>Step4：for内部的注释可以说明一切，用于统计uid下的不同进程的最高的消耗进程，以进程的运行时长为依据（user+system)；</p>
+<p>Step5：转换成最终的mAh；</p>
+<h5 id="WakeLockg功耗计算"><a href="#WakeLockg功耗计算" class="headerlink" title="WakeLockg功耗计算"></a>WakeLockg功耗计算</h5><p>初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">public WakelockPowerCalculator(PowerProfile profile) &#123;</div><div class="line">    mPowerWakelock = profile.getAveragePower(PowerProfile.POWER_CPU_AWAKE);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见，wakelock电量的计算是以CPU wake时耗电量为基数统计的。</p>
+<p>计算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public void calculateApp(BatterySipper app, BatteryStats.Uid u, long rawRealtimeUs,</div><div class="line">                         long rawUptimeUs, int statsType) &#123;</div><div class="line">    long wakeLockTimeUs = 0;</div><div class="line">    final ArrayMap&lt;String, ? extends BatteryStats.Uid.Wakelock&gt; wakelockStats =</div><div class="line">            u.getWakelockStats();</div><div class="line">    final int wakelockStatsCount = wakelockStats.size();</div><div class="line">    for (int i = 0; i &lt; wakelockStatsCount; i++) &#123;</div><div class="line">        final BatteryStats.Uid.Wakelock wakelock = wakelockStats.valueAt(i);</div><div class="line"></div><div class="line">        // Only care about partial wake locks since full wake locks</div><div class="line">        // are canceled when the user turns the screen off.</div><div class="line">        BatteryStats.Timer timer = wakelock.getWakeTime(BatteryStats.WAKE_TYPE_PARTIAL);</div><div class="line">        if (timer != null) &#123;</div><div class="line">            wakeLockTimeUs += timer.getTotalTimeLocked(rawRealtimeUs, statsType);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    app.wakeLockTimeMs = wakeLockTimeUs / 1000; // convert to millis</div><div class="line">    mTotalAppWakelockTimeMs += app.wakeLockTimeMs;</div><div class="line"></div><div class="line">    // Add cost of holding a wake lock.</div><div class="line">    app.wakeLockPowerMah = (app.wakeLockTimeMs * mPowerWakelock) / (1000*60*60);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个比较简单，但值得注意的是，对于full wakelock，会只把灭屏之后的时间算作App的耗电，因此统计所有wakelock的partial wake总时长乘以CPU唤醒是的电流。</p>
+<h5 id="Radio（无线电网络）功耗"><a href="#Radio（无线电网络）功耗" class="headerlink" title="Radio（无线电网络）功耗"></a>Radio（无线电网络）功耗</h5><p>初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">public MobileRadioPowerCalculator(PowerProfile profile, BatteryStats stats) &#123;</div><div class="line">    mPowerRadioOn = profile.getAveragePower(PowerProfile.POWER_RADIO_ACTIVE);</div><div class="line">    for (int i = 0; i &lt; mPowerBins.length; i++) &#123;</div><div class="line">        mPowerBins[i] = profile.getAveragePower(PowerProfile.POWER_RADIO_ON, i);</div><div class="line">    &#125;</div><div class="line">    mPowerScan = profile.getAveragePower(PowerProfile.POWER_RADIO_SCANNING);</div><div class="line">    mStats = stats;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>主要从profile中提取radio在active、scan的时候平均电流，以及在不同信号强度下的电流。</p>
+<p>计算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">public void calculateApp(BatterySipper app, BatteryStats.Uid u, long rawRealtimeUs,</div><div class="line">                         long rawUptimeUs, int statsType) &#123;</div><div class="line">    // Add cost of mobile traffic.</div><div class="line">    app.mobileRxPackets = u.getNetworkActivityPackets(BatteryStats.NETWORK_MOBILE_RX_DATA,</div><div class="line">            statsType);</div><div class="line">    app.mobileTxPackets = u.getNetworkActivityPackets(BatteryStats.NETWORK_MOBILE_TX_DATA,</div><div class="line">            statsType);</div><div class="line">    app.mobileActive = u.getMobileRadioActiveTime(statsType) / 1000;</div><div class="line">    app.mobileActiveCount = u.getMobileRadioActiveCount(statsType);</div><div class="line">    app.mobileRxBytes = u.getNetworkActivityBytes(BatteryStats.NETWORK_MOBILE_RX_DATA,</div><div class="line">            statsType);</div><div class="line">    app.mobileTxBytes = u.getNetworkActivityBytes(BatteryStats.NETWORK_MOBILE_TX_DATA,</div><div class="line">            statsType);</div><div class="line"></div><div class="line">    if (app.mobileActive &gt; 0) &#123;</div><div class="line">        // We are tracking when the radio is up, so can use the active time to</div><div class="line">        // determine power use.</div><div class="line">        mTotalAppMobileActiveMs += app.mobileActive;</div><div class="line">        app.mobileRadioPowerMah = (app.mobileActive * mPowerRadioOn) / (1000*60*60);</div><div class="line">    &#125; else &#123;</div><div class="line">        // We are not tracking when the radio is up, so must approximate power use</div><div class="line">        // based on the number of packets.</div><div class="line">        app.mobileRadioPowerMah = (app.mobileRxPackets + app.mobileTxPackets)</div><div class="line">                * getMobilePowerPerPacket(rawRealtimeUs, statsType);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这个统计也比较简单：</p>
+<ol>
+<li>优先以无线网络active时长为基准，active time * powerRadioOn。</li>
+<li>假如active time为0，则根据网络收发包的数量为基础计算，(Rx + Tx) * anvPerPacketPower。</li>
+</ol>
+<p>可见，就算应该考虑集中处理网络操作，减少active time才是最有效的节省电量消耗的方法，packet数量次之。</p>
+<h5 id="Wifi功耗"><a href="#Wifi功耗" class="headerlink" title="Wifi功耗"></a>Wifi功耗</h5><p>计算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public void calculateApp(BatterySipper app, BatteryStats.Uid u, long rawRealtimeUs,</div><div class="line">                         long rawUptimeUs, int statsType) &#123;</div><div class="line">    final long idleTime = u.getWifiControllerActivity(BatteryStats.CONTROLLER_IDLE_TIME,</div><div class="line">            statsType);</div><div class="line">    final long txTime = u.getWifiControllerActivity(BatteryStats.CONTROLLER_TX_TIME, statsType);</div><div class="line">    final long rxTime = u.getWifiControllerActivity(BatteryStats.CONTROLLER_RX_TIME, statsType);</div><div class="line">    app.wifiRunningTimeMs = idleTime + rxTime + txTime;</div><div class="line">    app.wifiPowerMah =</div><div class="line">            ((idleTime * mIdleCurrentMa) + (txTime * mTxCurrentMa) + (rxTime * mRxCurrentMa))</div><div class="line">            / (1000*60*60);</div><div class="line">            ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>算法比较简单：以wifi空间时长、收发时长为基础计算，因为App在使用wifi模块时，就算收发结束，wifi模块还是会持有一段时间才释放。</p>
+<h5 id="Bluetooth蓝牙功耗"><a href="#Bluetooth蓝牙功耗" class="headerlink" title="Bluetooth蓝牙功耗"></a>Bluetooth蓝牙功耗</h5><p>算法同wifi，即以蓝牙的idle、receive time、transfer time为基础计算，代码略。</p>
+<h5 id="Sensor功耗"><a href="#Sensor功耗" class="headerlink" title="Sensor功耗"></a>Sensor功耗</h5><p>这里面主要统计各种传感器（比如重力感应、陀螺仪等）以及GPS的耗电量，算法也比较简单，都是：time * sensorPower：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">public void calculateApp(BatterySipper app, BatteryStats.Uid u, long rawRealtimeUs,</div><div class="line">                         long rawUptimeUs, int statsType) &#123;</div><div class="line">    final SparseArray&lt;? extends BatteryStats.Uid.Sensor&gt; sensorStats = u.getSensorStats();</div><div class="line">    final int NSE = sensorStats.size();</div><div class="line">    for (int ise = 0; ise &lt; NSE; ise++) &#123;</div><div class="line">        final BatteryStats.Uid.Sensor sensor = sensorStats.valueAt(ise);</div><div class="line">        final int sensorHandle = sensorStats.keyAt(ise);</div><div class="line">        final BatteryStats.Timer timer = sensor.getSensorTime();</div><div class="line">        final long sensorTime = timer.getTotalTimeLocked(rawRealtimeUs, statsType) / 1000;</div><div class="line">        switch (sensorHandle) &#123;</div><div class="line">            case BatteryStats.Uid.Sensor.GPS:</div><div class="line">                app.gpsTimeMs = sensorTime;</div><div class="line">                app.gpsPowerMah = (app.gpsTimeMs * mGpsPowerOn) / (1000*60*60);</div><div class="line">                break;</div><div class="line">            default:</div><div class="line">                final int sensorsCount = mSensors.size();</div><div class="line">                for (int i = 0; i &lt; sensorsCount; i++) &#123;</div><div class="line">                    final Sensor s = mSensors.get(i);</div><div class="line">                    if (s.getHandle() == sensorHandle) &#123;</div><div class="line">                        app.sensorPowerMah += (sensorTime * s.getPower()) / (1000*60*60);</div><div class="line">                        break;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见，尽可能短时间的持有硬件传感器才是王道，特别是GPS服务。</p>
+<h5 id="相机以及闪光灯功耗"><a href="#相机以及闪光灯功耗" class="headerlink" title="相机以及闪光灯功耗"></a>相机以及闪光灯功耗</h5><p>代码只有几行，比较简单，算法也是：time * power。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>电量消耗算法总的来说在CPU、Radio、Wakelock上会复杂点，也是平时最容易忽略掉的。其他基本属于硬件类，业务属性比较清晰也是最容易解决的。</p>
+<p>对于CPU应该尽可能的让其在低负载情况下运行，因为高负载后单位时间电流也会不止翻倍的增加。其次就是尽可能减少移动网络的active time。</p>
+<p>其实，看到算法后，我们还是不能够感知硬件的功耗值在什么程度，如下为网上找到的三星手机的power_profile.xml：</p>
+<p><img src="./battery/profile.png" alt="profile"></p>
+<p>可见，</p>
+<ol>
+<li>CPU在转速达到1G的时候，比100Mhz高了5倍。</li>
+<li>对于radio和wifi，scan明显比active传输数据时候更高。</li>
+<li>radio的耗电也比wifi更高。</li>
+<li>wifi的电量不会分level，所以无论强弱信号都一样；radio则不同，会分level。</li>
+</ol>
+<h2 id="Last"><a href="#Last" class="headerlink" title="Last"></a>Last</h2><p>本文的代码均以6.0(v23)版本做分析。安卓上电量统计的大致描述可如下：</p>
+<ol>
+<li>应用以及系统运行时记录时长等数据到batterystats.bin中。</li>
+<li>BatteryStatsImpl提供了从batterystats.bin提取各种统计数据的能力。</li>
+<li>PowerProfile提供了手机各个部件的单位电流量数值，数值记录在power_profile.xml中。</li>
+<li>BatteryStatsService做为服务提供数据给系统和应用。</li>
+<li>BatteryStatsHelper则从BatteryStatsImpl中获取统计数据，然后再根据PowerProfile计算出最终的电量消耗。</li>
+</ol>
+<p>//frameworks/base/core/res/res/xml/power_profile.xml</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/应用调优/" rel="tag"># 应用调优</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/09/如何优化你的安卓应用：电量篇（二）分析电量消耗/" rel="next" title="如何优化你的安卓应用：电量篇（二）分析电量消耗">
+                <i class="fa fa-chevron-left"></i> 如何优化你的安卓应用：电量篇（二）分析电量消耗
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/09/聊聊SharePreferences的坑/" rel="prev" title="聊聊SharePreferences的坑">
+                聊聊SharePreferences的坑 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="笔歌" />
+          <p class="site-author-name" itemprop="name">笔歌</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#手机的电量消耗"><span class="nav-number">1.</span> <span class="nav-text">手机的电量消耗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#开机使用中的电量消耗"><span class="nav-number">1.0.1.</span> <span class="nav-text">开机使用中的电量消耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络环境与耗电"><span class="nav-number">1.0.2.</span> <span class="nav-text">网络环境与耗电</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APP的电量消耗统计"><span class="nav-number">2.</span> <span class="nav-text">APP的电量消耗统计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BatteryStatsService"><span class="nav-number">2.0.1.</span> <span class="nav-text">BatteryStatsService</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BatteryStatsImpl"><span class="nav-number">2.0.2.</span> <span class="nav-text">BatteryStatsImpl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PowerProfile"><span class="nav-number">2.0.3.</span> <span class="nav-text">PowerProfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#电量计算：BatteryStatsHelper"><span class="nav-number">2.0.4.</span> <span class="nav-text">电量计算：BatteryStatsHelper</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CPU功耗统计"><span class="nav-number">2.0.4.1.</span> <span class="nav-text">CPU功耗统计</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#WakeLockg功耗计算"><span class="nav-number">2.0.4.2.</span> <span class="nav-text">WakeLockg功耗计算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Radio（无线电网络）功耗"><span class="nav-number">2.0.4.3.</span> <span class="nav-text">Radio（无线电网络）功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Wifi功耗"><span class="nav-number">2.0.4.4.</span> <span class="nav-text">Wifi功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Bluetooth蓝牙功耗"><span class="nav-number">2.0.4.5.</span> <span class="nav-text">Bluetooth蓝牙功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Sensor功耗"><span class="nav-number">2.0.4.6.</span> <span class="nav-text">Sensor功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#相机以及闪光灯功耗"><span class="nav-number">2.0.4.7.</span> <span class="nav-text">相机以及闪光灯功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">2.0.4.8.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Last"><span class="nav-number">3.</span> <span class="nav-text">Last</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">笔歌</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

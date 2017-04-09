@@ -1,0 +1,749 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="其他," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="平时写博客不多，一是自己也没太多时间，二是自己真的懒。但作为一个技术猿，没有一个自己的博客好像有点说不过去，于是决定还是要多总结多归纳。博客平台很多，之前也用过一些，比如csdn等，不过时间久了就废掉了，另外一个就是这些博客空间的主题样式自己很不喜欢，于是还是决定使用GitHub的pages，毕竟github会一直用下去，主题还能根据自己喜好定制，甚至全部自行开发。 hexo是一款基于Node.j">
+<meta name="keywords" content="其他">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Github+hexo搭建Pages">
+<meta property="og:url" content="http://yoursite.com/2017/04/09/Github-hexo搭建Pages/index.html">
+<meta property="og:site_name" content="笔歌的博客">
+<meta property="og:description" content="平时写博客不多，一是自己也没太多时间，二是自己真的懒。但作为一个技术猿，没有一个自己的博客好像有点说不过去，于是决定还是要多总结多归纳。博客平台很多，之前也用过一些，比如csdn等，不过时间久了就废掉了，另外一个就是这些博客空间的主题样式自己很不喜欢，于是还是决定使用GitHub的pages，毕竟github会一直用下去，主题还能根据自己喜好定制，甚至全部自行开发。 hexo是一款基于Node.j">
+<meta property="og:updated_time" content="2017-04-09T07:52:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Github+hexo搭建Pages">
+<meta name="twitter:description" content="平时写博客不多，一是自己也没太多时间，二是自己真的懒。但作为一个技术猿，没有一个自己的博客好像有点说不过去，于是决定还是要多总结多归纳。博客平台很多，之前也用过一些，比如csdn等，不过时间久了就废掉了，另外一个就是这些博客空间的主题样式自己很不喜欢，于是还是决定使用GitHub的pages，毕竟github会一直用下去，主题还能根据自己喜好定制，甚至全部自行开发。 hexo是一款基于Node.j">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/09/Github-hexo搭建Pages/"/>
+
+
+
+
+
+  <title> Github+hexo搭建Pages | 笔歌的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔歌的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/09/Github-hexo搭建Pages/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="笔歌">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔歌的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Github+hexo搭建Pages
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T15:31:42+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>平时写博客不多，一是自己也没太多时间，二是自己真的懒。但作为一个技术猿，没有一个自己的博客好像有点说不过去，于是决定还是要多总结多归纳。博客平台很多，之前也用过一些，比如csdn等，不过时间久了就废掉了，另外一个就是这些博客空间的主题样式自己很不喜欢，于是还是决定使用GitHub的pages，毕竟github会一直用下去，主题还能根据自己喜好定制，甚至全部自行开发。</p>
+<p>hexo是一款基于Node.js的静态博客框架, 支持markdown语法，选择原因就不再细说了。</p>
+<p>另外本文不是针对小白，仅会对关键信息做说明。</p>
+<h3 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h3><h4 id="基本环境"><a href="#基本环境" class="headerlink" title="基本环境"></a>基本环境</h4><ul>
+<li>Node JS：必须，自行到官网下载；</li>
+<li>Git：必须，自行到官网下载；</li>
+</ul>
+<h4 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h4><p><a href="https://hexo.io/" target="_blank" rel="external">hexo官网链接</a></p>
+<p>安装命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-cli -g</div></pre></td></tr></table></figure>
+<p>在这一步我出现了命令权限不足，记得是一个local没有权限，有点记不清了，可以直接google查询错误，sudo赋予权限即可。</p>
+<h3 id="创建自己的pages"><a href="#创建自己的pages" class="headerlink" title="创建自己的pages"></a>创建自己的pages</h3><p>（1）创建自己的目录，比如./xxx/blog，并切换到blog目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd ./xxx/blog</div></pre></td></tr></table></figure>
+<p>（2）初始化hexo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init</div></pre></td></tr></table></figure>
+<p>好了，至此已经创建好了自己的博客hexo目录，可以看下目录下的文件结构。其中我们最需要关心的是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">_config.yml：hexo的全局配置，包括博客页面的名称、描述、作者、各个目录信息等全局配置。</div><div class="line">./public：存放生成的pages文件，比如首页index.html、css、js等。</div><div class="line">./source：存放页面源文件，即我们写博客对应的MD源文件，以及关于等页面。</div><div class="line">./themes：主题目录，即我们下载使用的主题，默认是使用的landscape主题。</div></pre></td></tr></table></figure>
+<p>（3）生成pages并本地查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">先执行：hexo generate</div><div class="line">然后执行：hexo server</div></pre></td></tr></table></figure>
+<p>这时候就可以到本地浏览器上通过：<a href="http://localhost:4000/" target="_blank" rel="external">http://localhost:4000</a> 查看我们的博客了。</p>
+<h3 id="关联Github"><a href="#关联Github" class="headerlink" title="关联Github"></a>关联Github</h3><p>搭建好了本地的hexo，但没和github绑定起来一切都是白搭。打开根目录下面的 _config.yml 文件，翻到最后，并添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># Deployment</div><div class="line">## Docs: https://hexo.io/docs/deployment.html</div><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  repo: https://github.com/XXX/XXX.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure>
+<p>这个就不需要再详细说了吧。</p>
+<p>最后，将博客部署到github上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo generate</div><div class="line">hexo deploy</div></pre></td></tr></table></figure>
+<h3 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h3><p>这时候会发现主题不是自己想要的，想定义一个自己喜欢的主题，一种方式自己搭建一套，不过对于我这前端能力是太难了，没时间去研究了，还是使用现成的吧。</p>
+<p><a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="external">hexo主题列表</a></p>
+<p>到上面的链接里面找到自己喜欢的一个主题，比如我用的是<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="external">Next</a>，后面就以这个主题讲解了。</p>
+<ul>
+<li><p>上文说过 ./themes 目录是存放主题的，因此我们需要到主题的git仓库下载一份source或者直接clone一份代码到themes目录下，文件夹名称根据自己喜欢的调整就好，比如我这里取得名字就叫：hexo-theme-next。</p>
+</li>
+<li><p>修改全局的 _config.yml配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># Extensions</div><div class="line">## Plugins: https://hexo.io/plugins/</div><div class="line">## Themes: https://hexo.io/themes/</div><div class="line">theme: hexo-theme-next</div></pre></td></tr></table></figure>
+<p>OK，主题搞定，自己再从新generate测试下效果。</p>
+</li>
+</ul>
+<h3 id="写自己的文章"><a href="#写自己的文章" class="headerlink" title="写自己的文章"></a>写自己的文章</h3><p>bash命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;name&quot;</div></pre></td></tr></table></figure>
+<p>执行后你会发现在 ./source/_posts/ 目录下面多了一个name.md的文件，然后就可以使用markdown语法编写自己的文章了。</p>
+<h3 id="创建标签"><a href="#创建标签" class="headerlink" title="创建标签"></a>创建标签</h3><p>一篇文章通常会附带标签。另外在首页也通常会有“标签”的菜单按钮，为此，我们肯定需要先创建一个类似“关于”的承载页面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page &quot;tags&quot;</div></pre></td></tr></table></figure>
+<p>这样会在./blog/source/ 目录下面创建类似about的tags子目录，内部也会相应有一个index.md文件，注意，打开该md文件，并指定type为tags，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: 标签列表</div><div class="line">date: 2017-02-21 00:07:29</div><div class="line">type: &quot;tags&quot;</div><div class="line">comments: false # 关闭这个页面的多说或者 Disqus 评论</div><div class="line">---</div></pre></td></tr></table></figure>
+<p>这样，标签页面就生成了。但怎么为文章添加标签并和文章关联起来呢？我们在回过来看看 hexo new “name” 后生成的文章md文件，头部如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">title: 我是文章title</div><div class="line">date: 2017-02-20 22:44:27</div><div class="line">tags: [技术,生活]</div><div class="line">---</div></pre></td></tr></table></figure>
+<p>即直接指定文章的tags，如果多个使用逗号分隔，hexo g后会发现会生成两个标签的页面文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">INFO  Generated: tags/生活/index.html</div><div class="line">INFO  Generated: tags/技术/index.html</div></pre></td></tr></table></figure>
+<h3 id="定义自己的分类categories"><a href="#定义自己的分类categories" class="headerlink" title="定义自己的分类categories"></a>定义自己的分类categories</h3><p>和tags步骤相同，只需要将tags替换成categories即可。</p>
+<h3 id="添加评论"><a href="#添加评论" class="headerlink" title="添加评论"></a>添加评论</h3><p>我使用的是多说评论，具体操作：<br><a href="https://github.com/iissnan/hexo-theme-next/wiki/%E8%AE%BE%E7%BD%AE%E5%A4%9A%E8%AF%B4-DISQUS" target="_blank" rel="external">多说评论</a></p>
+<h3 id="博客空间其他配置"><a href="#博客空间其他配置" class="headerlink" title="博客空间其他配置"></a>博客空间其他配置</h3><h4 id="更换语言"><a href="#更换语言" class="headerlink" title="更换语言"></a>更换语言</h4><p>你可能发现自己的博客空间文字都是英文，想换成中文，可以到全局的 _config.yml 文件中修改语言：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">language: zh-Hans</div></pre></td></tr></table></figure>
+<p>也许你会说不知道语言有哪些，那么你可以到你的theme目录下面找到languages，里面有该theme所支持的语言。</p>
+<h4 id="首页顶部增加“关于”、“分类”、“标签”等页面"><a href="#首页顶部增加“关于”、“分类”、“标签”等页面" class="headerlink" title="首页顶部增加“关于”、“分类”、“标签”等页面"></a>首页顶部增加“关于”、“分类”、“标签”等页面</h4><p>打开next theme的目录，发现里面也有一个 __config.yml 文件，可以理解这是主题的配置文件，打开后里面可以找到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"># ---------------------------------------------------------------</div><div class="line"># Menu Settings</div><div class="line"># ---------------------------------------------------------------</div><div class="line"></div><div class="line"># When running the site in a subdirectory (e.g. domain.tld/blog), remove the leading slash (/archives -&gt; archives)</div><div class="line">menu:</div><div class="line">  home: /</div><div class="line">  categories: /categories</div><div class="line">  tags: /tags</div><div class="line">  archives: /archives</div><div class="line">  about: /about</div><div class="line">  #sitemap: /sitemap.xml</div><div class="line">  #commonweal: /404.html</div></pre></td></tr></table></figure>
+<p>把想要的menu打开即可，注意：about: /about 代表首页“关于”菜单按钮点击的响应页面要到/about里面去找，而这个页面又是放在哪里的呢？ 答案就是放在项目目录的./source中，目前我们还只有 ./_posts 子目录存放我们的文章，因此我们需要创建一个./about目录页面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new pages &quot;about&quot; 	// 创建新页面</div></pre></td></tr></table></figure>
+<p>此时发现./source目录下面多了一个about子目录，里面也有一个index.md，我们可以填写对应的关于内容即可。</p>
+<h4 id="修改头像"><a href="#修改头像" class="headerlink" title="修改头像"></a>修改头像</h4><p>头像是主题的属性，因此打开相关主题的config文件，找到里面的avatar设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># Sidebar Avatar</div><div class="line"># in theme directory(source/images): /images/avatar.jpg</div><div class="line"># in site  directory(source/uploads): /uploads/avatar.jpg</div><div class="line">avatar: /images/avatar.jpg</div></pre></td></tr></table></figure>
+<p>代码里也有相关的注释，即头像文件是放在theme目录下的source/images中，自己放入自己喜欢的照片即可。</p>
+<h4 id="首页显示成摘要"><a href="#首页显示成摘要" class="headerlink" title="首页显示成摘要"></a>首页显示成摘要</h4><p>这个在相关theme的config文件中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Automatically Excerpt. Not recommand.</div><div class="line"># Please use &lt;!-- more --&gt; in the post to control excerpt accurately.</div><div class="line">auto_excerpt:</div><div class="line">  enable: true</div><div class="line">  length: 150</div></pre></td></tr></table></figure>
+<p>将auto_excerpt值修改成true即可。其他theme也可以找到类似的设置，这个仅针对next的theme配置。</p>
+<h3 id="hexo常用命令总结"><a href="#hexo常用命令总结" class="headerlink" title="hexo常用命令总结"></a>hexo常用命令总结</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">hexo new&quot;postName&quot; #新建文章</div><div class="line"></div><div class="line">hexo new page&quot;pageName&quot; #新建页面</div><div class="line"></div><div class="line">hexo generate #生成静态页面至public目录，缩写 hexo g</div><div class="line"></div><div class="line">hexo server #开启预览访问端口（默认端口4000，&apos;ctrl + c&apos;关闭server），缩写 hexo s</div><div class="line"></div><div class="line">hexo deploy #将.deploy目录部署到GitHub，缩写 hexo d</div><div class="line"></div><div class="line">hexo clean #清理hexo缓存</div><div class="line"></div><div class="line">hexo help # 查看帮助</div><div class="line"></div><div class="line">hexo version #查看Hexo的版本</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/其他/" rel="tag"># 其他</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/09/聊聊SharePreferences的坑/" rel="next" title="聊聊SharePreferences的坑">
+                <i class="fa fa-chevron-left"></i> 聊聊SharePreferences的坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="笔歌" />
+          <p class="site-author-name" itemprop="name">笔歌</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#环境搭建"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基本环境"><span class="nav-number">1.1.</span> <span class="nav-text">基本环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自己的pages"><span class="nav-number">2.</span> <span class="nav-text">创建自己的pages</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关联Github"><span class="nav-number">3.</span> <span class="nav-text">关联Github</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更换主题"><span class="nav-number">4.</span> <span class="nav-text">更换主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写自己的文章"><span class="nav-number">5.</span> <span class="nav-text">写自己的文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建标签"><span class="nav-number">6.</span> <span class="nav-text">创建标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义自己的分类categories"><span class="nav-number">7.</span> <span class="nav-text">定义自己的分类categories</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加评论"><span class="nav-number">8.</span> <span class="nav-text">添加评论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#博客空间其他配置"><span class="nav-number">9.</span> <span class="nav-text">博客空间其他配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#更换语言"><span class="nav-number">9.1.</span> <span class="nav-text">更换语言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首页顶部增加“关于”、“分类”、“标签”等页面"><span class="nav-number">9.2.</span> <span class="nav-text">首页顶部增加“关于”、“分类”、“标签”等页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改头像"><span class="nav-number">9.3.</span> <span class="nav-text">修改头像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首页显示成摘要"><span class="nav-number">9.4.</span> <span class="nav-text">首页显示成摘要</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo常用命令总结"><span class="nav-number">10.</span> <span class="nav-text">hexo常用命令总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">笔歌</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
