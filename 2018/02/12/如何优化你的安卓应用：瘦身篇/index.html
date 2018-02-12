@@ -1,0 +1,778 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,应用调优," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta name="keywords" content="Android,应用调优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优化你的安卓应用：瘦身篇">
+<meta property="og:url" content="http://yoursite.com/2018/02/12/如何优化你的安卓应用：瘦身篇/index.html">
+<meta property="og:site_name" content="笔歌的博客">
+<meta property="og:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta property="og:image" content="http://yoursite.com/img/size/parse.png">
+<meta property="og:image" content="http://yoursite.com/img/size/inspect-1.png">
+<meta property="og:image" content="http://yoursite.com/img/size/inspect-2.png">
+<meta property="og:image" content="http://yoursite.com/img/size/res_proguard.png">
+<meta property="og:updated_time" content="2018-02-12T08:08:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何优化你的安卓应用：瘦身篇">
+<meta name="twitter:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta name="twitter:image" content="http://yoursite.com/img/size/parse.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/12/如何优化你的安卓应用：瘦身篇/"/>
+
+
+
+
+
+  <title> 如何优化你的安卓应用：瘦身篇 | 笔歌的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">笔歌的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/12/如何优化你的安卓应用：瘦身篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="笔歌">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="笔歌的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何优化你的安卓应用：瘦身篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-12T15:58:58+08:00">
+                2018-02-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。</p>
+<h2 id="Step-1：分析APK"><a href="#Step-1：分析APK" class="headerlink" title="Step 1：分析APK"></a>Step 1：分析APK</h2><p>Android Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。</p>
+<p><img src="/img/size/parse.png" alt="分析结果"></p>
+<p>图里面基本可以看出对于一个大型APP，SO库通常是最大头的一部分，占比高达41.4%，assets和resource合计占比达到29.6%，Java的Dex文件占比21.5%，最后就是resources.arsc文件占了1.1%。</p>
+<h2 id="Step-2：清理无用资源"><a href="#Step-2：清理无用资源" class="headerlink" title="Step 2：清理无用资源"></a>Step 2：清理无用资源</h2><p>无用资源是最有效最直接的瘦身点，也是大家都最能够想到的地方。</p>
+<p>话不多少，清理不能人工手动的挨个删除，这不是一个合格程序员该做的，能用机器清理的干嘛不高大上的写个脚本！！</p>
+<p>原理不多说，借用Android Studio自带的Lint工具，执行命令：</p>
+<blockquote>
+<p>命令：gradle clean lint</p>
+</blockquote>
+<p>生成的lint-result.xml中记录了扫描出的unused resource以及其他类型的优化建议，我们这里面主要关心的就是UnusedResource相关。</p>
+<p>扫描出来的资源数量当然不能靠我们人工一个一个移除了，这里面就需要我们编写脚本来完成了，比如Github上面的android-resource-remover。</p>
+<p>在此，还是推荐本人编写的lint-resource-cleaner。对于大型工程来说，可能有些module是外部引入的，希望全部keep住，同时可能引入的内部二方库，通过反射用到了我们我们包里面的资源，但这些都是通过某些前缀来标示的，android-resource-remover是不能够胜任这些负责的场景的，lint-resource-cleaner则完善了这些复杂的keep规则。具体使用就不再啰嗦了。移除后，整个工程清理了495个drawable，160个layout（数量还是很惊人的）。</p>
+<ol>
+<li><p>关于官方的clean工具</p>
+<p>官方也提供了lint的keep机制，但还是不够灵活。</p>
+</li>
+<li><p>关于shrinkResources</p>
+<p>开启后不会打包检测到的未引用资源，这种方式属于隐式移除，如果没有被keep住的资源但被反射使用了，将会引发不必要的crash问题。对于我们一个发展多年的应用来说，该方式很容易出现天坑。</p>
+</li>
+</ol>
+<blockquote>
+<p> 瘦身效果：减少2MB！</p>
+</blockquote>
+<h2 id="Step-3：进一步缩减resource-—-压缩png"><a href="#Step-3：进一步缩减resource-—-压缩png" class="headerlink" title="Step 3：进一步缩减resource — 压缩png"></a>Step 3：进一步缩减resource — 压缩png</h2><p>展开res的目录，可以看到很多drawable是很大的，我们这里发现了数张超过400KB的png图片，是可是极大地浪费。</p>
+<p>这里面就推荐使用无损压缩根据：<a href="https://tinypng.com/" target="_blank" rel="external">Tinypng</a> ，压缩率能够达到80%以上。本次工作遍历凡是超过50KB的文件均尝试做压缩（但压缩后需要列出来和ued同学确认最终的效果在高分辨率手机上是否有较明显的失真），包括依赖库中的资源文件也做替换。该压缩工具对有较大纯色块切非透明的背景图片有极大的压缩率，使用方法就不做介绍了，本身是一个网站，用起来很简单。</p>
+<blockquote>
+<p>瘦身效果：减少1MB！</p>
+</blockquote>
+<p>如果对所有图片做压缩，可以有更大的提升空间。</p>
+<h2 id="Step-4：排查Assets"><a href="#Step-4：排查Assets" class="headerlink" title="Step 4：排查Assets"></a>Step 4：排查Assets</h2><p>Assets通常来说建议音频文件优先使用具有压缩率的mp3等格式，视频文件类似。另外一方面就是需要排查是否有些assets是无效的（业务发展等，甚至是二方库）。本次就发现不同二方库引入了相同的资源（且占比非常大），直接排掉！！</p>
+<blockquote>
+<p>瘦身效果：减少5MB！</p>
+</blockquote>
+<h2 id="Step-5：lib中的so库"><a href="#Step-5：lib中的so库" class="headerlink" title="Step 5：lib中的so库"></a>Step 5：lib中的so库</h2><p>上文分析中已经确定我们的产品apk中so占了超过40%的比例。</p>
+<p>so通常会设置armabi、armabi-v7、x863个目录，甚至更多。x86的机型市场上占比已经非常非常少了，没有必要为了这一小部分用户牺牲绝大多数人的利益，必要的话可以单独发行x86版本。对于armabi-v7的机型是能。向下兼容armabi的，反之则不行，因此非必要的情况下建议也不保留v7。现在主流app（微信、手淘）均已如此，不过我们已经做过了该方式的减包，本次优化就派不上用场了。</p>
+<p>另外就是分析so库是否存在无效可去除的包，比如本次发现音视频编解码ffmpeg居然存在了多份（不过名字有差异），基本就是多个二方库各自为营做自己的库，没有统一导致，这个点后续再推进，短期无法解决。</p>
+<p>最后就是考虑so库的动态下载。有些功能会依赖一些很大的so，而功能的uv却很低，从产品角度却又不能舍弃，这种类型的so其实是可以使用动态下载的，即用户运行时下载。方法网上文章较多就不再细述了。</p>
+<h2 id="Step-6：清理无用Java代码"><a href="#Step-6：清理无用Java代码" class="headerlink" title="Step 6：清理无用Java代码"></a>Step 6：清理无用Java代码</h2><p>日常开发中除了无用的resource，另外一个大头就是java class，特别是activity、fragment、adapter等都会直接引用了layout，而layout又直接引用了drawable，因此如果能排掉这些无用的代码也能直接释放很多的资源文件。不幸的是，笔者目前也没找到比较合适的方法来清理Activity。</p>
+<p>针对该问题，网上更多的会提到UCDetector，但该工具貌似也只针对Eclipse的插件，AS到目前为止还没有一个比较合适的插件可用。</p>
+<p>但AS提供了Inspect Code功能，在Analyze菜单下，该功能是针对代码的静态扫描，能够扫描大大小小的问题，类似于lint。不过扫描会很慢很慢，大型工程建议分子模块扫描，同时按需扫描问题类型，或者专门找一台空闲设备慢慢扫描吧，哈哈~~</p>
+<p><img src="/img/size/inspect-1.png" alt="Inspect Code"></p>
+<p><img src="/img/size/inspect-2.png" alt="Inspect Code Result面板"></p>
+<p>对于无用的java代码相关（包含了class的成员变量、method、param等等）是在Unused declaration中，可在结果面板中左侧按钮export 导出生成xml文件（默认名称unused.xml）。</p>
+<p>这个功能个人认为还不完善，如果一个类有方法和成员变量，尽管该类没有被引用并实例化，但仍然只会检测method或field未使用，却不会提示class not use，因此检测出来的列表需要我们人工挨个排查（这个点确实有点舒服，但总比没有的强，至少帮我们缩小了范围）。剩下的就是使用脚本整理文件了，这个可以到我的github空间里面提供的脚本。</p>
+<h2 id="Step-7：混淆：Proguard与资源混淆"><a href="#Step-7：混淆：Proguard与资源混淆" class="headerlink" title="Step 7：混淆：Proguard与资源混淆"></a>Step 7：混淆：Proguard与资源混淆</h2><p>Proguard最直接的就是能够将大部分的class做混淆，而混淆又是将method name、class name简化，这就直接减少了class文件的字节码占用，dex文件的大小也能够直接减小。</p>
+<p><code>getDefaultProguardFile(&#39;proguard-android.txt&#39;)</code> :可从 Android SDK <code>tools/proguard/</code> 文件夹获取默认的 ProGuard 设置。要想做进一步的代码压缩，请尝试使用位于同一位置的 <code>proguard-android-optimize.txt</code> 文件，但同时也会引入未知的risks，比如可能在部分Dalvik系统上出现异常。</p>
+<p>resources.arsc文件用来映射资源id到资源文件，内容如下图：</p>
+<p><img src="/img/size/res_proguard.png" alt="资源混淆"></p>
+<p>混淆后对name等资源做了压缩后，将大幅减小该文件的大小。可以用微信开源工具：AndResGuard来完成（但我们还是用自己的，哈哈）。</p>
+<blockquote>
+<p>Release包经过全混淆后包大小能够减少5MB左右！</p>
+</blockquote>
+<h2 id="Step-8：其他优化"><a href="#Step-8：其他优化" class="headerlink" title="Step 8：其他优化"></a>Step 8：其他优化</h2><p>瘦身上基本集中在两个点：java代码、resource。</p>
+<p>Java代码需要经常清理日积月累的无用代码，下线无用的功能，以及无用的依赖库，甚至是精简依赖库（因为你可能只使用了其中的几个类）。</p>
+<p>对于resource，特别是drawable，基本遵循几点原则：</p>
+<ol>
+<li>能使用shpe等xml生成的就不使用png和jpg；</li>
+<li>能使用webp的就不适用png和jpg；</li>
+<li>能使用jpg的就不使用png；</li>
+<li>能使用.9类型的就不使用完整切图；</li>
+<li>能压缩的就建议使用tinypng等工具做有损压缩；</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/应用调优/" rel="tag"># 应用调优</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/09/如何优化你的安卓应用：电量篇（三）优化电量消耗/" rel="prev" title="如何优化你的安卓应用：电量篇（三）优化电量消耗">
+                如何优化你的安卓应用：电量篇（三）优化电量消耗 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="笔歌" />
+          <p class="site-author-name" itemprop="name">笔歌</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-1：分析APK"><span class="nav-number">1.</span> <span class="nav-text">Step 1：分析APK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-2：清理无用资源"><span class="nav-number">2.</span> <span class="nav-text">Step 2：清理无用资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-3：进一步缩减resource-—-压缩png"><span class="nav-number">3.</span> <span class="nav-text">Step 3：进一步缩减resource — 压缩png</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-4：排查Assets"><span class="nav-number">4.</span> <span class="nav-text">Step 4：排查Assets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-5：lib中的so库"><span class="nav-number">5.</span> <span class="nav-text">Step 5：lib中的so库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-6：清理无用Java代码"><span class="nav-number">6.</span> <span class="nav-text">Step 6：清理无用Java代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-7：混淆：Proguard与资源混淆"><span class="nav-number">7.</span> <span class="nav-text">Step 7：混淆：Proguard与资源混淆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step-8：其他优化"><span class="nav-number">8.</span> <span class="nav-text">Step 8：其他优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">笔歌</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
