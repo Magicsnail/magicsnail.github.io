@@ -87,21 +87,21 @@
 
 
 
-<meta name="description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta name="description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（我们的APP就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面">
 <meta name="keywords" content="Android,应用调优">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何优化你的安卓应用：瘦身篇">
 <meta property="og:url" content="http://yoursite.com/2018/02/12/如何优化你的安卓应用：瘦身篇/index.html">
 <meta property="og:site_name" content="笔歌的博客">
-<meta property="og:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta property="og:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（我们的APP就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面">
 <meta property="og:image" content="http://yoursite.com/img/size/parse.png">
 <meta property="og:image" content="http://yoursite.com/img/size/inspect-1.png">
 <meta property="og:image" content="http://yoursite.com/img/size/inspect-2.png">
 <meta property="og:image" content="http://yoursite.com/img/size/res_proguard.png">
-<meta property="og:updated_time" content="2018-02-12T08:08:02.000Z">
+<meta property="og:updated_time" content="2018-02-12T08:15:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何优化你的安卓应用：瘦身篇">
-<meta name="twitter:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。">
+<meta name="twitter:description" content="一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（我们的APP就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。 Step 1：分析APKAndroid Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面">
 <meta name="twitter:image" content="http://yoursite.com/img/size/parse.png">
 
 
@@ -369,7 +369,7 @@
       
 
       
-        <p>一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（千牛就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。</p>
+        <p>一个大型APP经过了几年的不断发展后，随着业务代码不断的堆积必然面临安装包的膨胀（我们的APP就是从几M膨胀到近70M）。安装包过大除了影响用户更新下载的流量外，还会导致安装时间变长，运行时的DEX内存占用增加，这些都直接的影响用户体验。</p>
 <h2 id="Step-1：分析APK"><a href="#Step-1：分析APK" class="headerlink" title="Step 1：分析APK"></a>Step 1：分析APK</h2><p>Android Studio自带的解析基本已经够用，到AS的工程结构树中找到生成的Debug包双击即可打开。在这里面可以看到包内各个方面的占比。</p>
 <p><img src="/img/size/parse.png" alt="分析结果"></p>
 <p>图里面基本可以看出对于一个大型APP，SO库通常是最大头的一部分，占比高达41.4%，assets和resource合计占比达到29.6%，Java的Dex文件占比21.5%，最后就是resources.arsc文件占了1.1%。</p>
